@@ -17,10 +17,6 @@
  */
 
 
-unsigned int Factorial( unsigned int number ) {
-    return number <= 1 ? number : Factorial(number-1)*number;
-}
-
 SCENARIO("Success case 1: simple path") {
     GIVEN("initialization: simple path, no changing midway, single end and start") {
         Task taskA = Task(5, 5, "A");
