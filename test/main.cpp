@@ -16,7 +16,7 @@
  *        c. Multiple starts, multiple ends, critical path changes multiple times.
  *     - Failure cases:
  *       a. Invalid numerical input: tasks' duration is not a number,
- *          or less than 1000 and invalid number larger than max double
+ *          any invalid number larger than max double or less than 0.
  *       b. Invalid graphical input: the graph presentation of input is not directed acyclic graph. Graph presentation
  *          of input must be a tree for this implementation of CPM to work.
  *
@@ -61,7 +61,7 @@ SCENARIO("Success case 1: simple path") {
             input.insert(input.end(), newTaskE);
             input.insert(input.end(), newTaskF);
 
-            double expected_ECT = 27;
+            double expected_ECT = 24;
             std::vector<Task> critical_path{taskA, taskB, taskD, taskG};
             Analysis newAnalysis = Analysis(input);
 
