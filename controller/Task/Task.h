@@ -7,6 +7,7 @@ class Task {
         double cost;
         double earliestStart;
         std::string name;
-        Task(double duration, double cost, std::string name);
+        std::vector<Task> dependencies;
+        Task(double duration, double cost, std::string name, std::vector<Task> dependencies);
 };
 #endif //SCHEDULINGAPP_TASK_H
