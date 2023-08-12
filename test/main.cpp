@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "../controller/Task/Task.h"
 #include "../controller/Analysis/Analysis.h"
+
 /**
  * Using Catch2 testing library, this test file aims to cover the majority of failure as well successful cases for
  * calculating the earliest completed time, critical path as well as the slack cost based on CPM (Critical Path Method,
@@ -94,6 +95,40 @@ SCENARIO("Success case 1: simple path") {
     }
 
     GIVEN("Complex valid path, multiple starts, multiple ends, paths changes continuously") {
+        std::vector<Task> taskA1Dep = {};
+        std::vector<Task> taskA2Dep = {};
+        Task taskA1 = Task(5, 5, "A1", taskA1Dep);
+        Task taskA2 = Task(6, 6, "A2", taskA2Dep);
+        std::vector<Task> taskBDep;
+        taskBDep.push_back(taskA1);
+        Task taskB = Task(10, 10, "B", taskBDep);
+        std::vector<Task> taskCDep;
+        taskCDep.insert(taskCDep.end(), {taskA1, taskA2});
+        Task taskC = Task(8, 8, "C", taskCDep);
+        std::vector<Task> taskEDep;
+        taskEDep.push_back(taskC);
+        Task taskE = Task(12, 12, "E", taskEDep);
+        std::vector<Task> taskFDep;
+        taskFDep.push_back(taskC);
+        Task taskF = Task(10, 10, "F", taskFDep);
+        std::vector<Task> taskGDep;
+        taskGDep.push_back(taskF);
+        Task taskG = Task(4, 4, "G", taskGDep);
+        std::vector<Task> taskDDep = {taskE, taskB};
+        Task taskD = Task(6, 6, "D", taskDDep);
+        std::vector<Task> input;
+        input.insert(input.end(), {taskA1, taskA2, taskB, taskC, taskD, taskE, taskF, taskC});
 
+        WHEN("complex path, changes in critical path midway") {
+            double expected_ECT = 32;
+            std::vector<Task> critical_path{taskA2, taskC, taskC, taskD};
+            Analysis newAnalysis = Analysis(input);
+
+            THEN("changes in critical path") {
+                auto ret = newAnalysis.performAnalysis();
+                REQUIRE(ret.ECT == expected_ECT);
+                REQUIRE(ret.criticalPath == critical_path);
+            }
+        }
     }
 }
