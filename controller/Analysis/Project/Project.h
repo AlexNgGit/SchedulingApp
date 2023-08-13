@@ -1,9 +1,9 @@
 #ifndef SCHEDULINGAPP_ANALYSIS_H
 #define SCHEDULINGAPP_ANALYSIS_H
 #include <vector>
-#include "../Task/Task.h"
+#include "../../Task/Task.h"
 /**
- * Analysis is an information object that accept an input of Tasks (more details are in ../Task/Task.h) to generate:
+ * Project is an information object that accept an input of Tasks (more details are in ../Task/Task.h) to generate:
  *      1) Estimated earliest time
  *      2) An array (vector implementation) of critical paths
  *      3) A topological sorted array of all the tasks
@@ -20,16 +20,15 @@
  *
  */
 
-class Analysis {
+class Project {
 public:
     double ECT;
     std::vector<Task> criticalPath;
     std::vector<Task> taskList;
-    std::vector<Task> emptyArray = {};
-    Task START = Task(0, 0, "START", emptyArray);
-    Task END = Task(0, 0, "END", emptyArray);
-    Analysis(std::vector<Task> input);
-    Analysis performAnalysis();
+    Task* START;
+    Task* END;
+    Project(std::vector<Task> input);
+    Project performAnalysis();
 };
 
 #endif //SCHEDULINGAPP_ANALYSIS_H

@@ -1,12 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 #include <algorithm>
 #include "../controller/Task/Task.h"
-#include "../controller/Analysis/Analysis.h"
+#include "../controller/Analysis/Project/Project.h"
 
 /**
  * Using Catch2 testing library, this test file aims to cover the majority of failure as well successful cases for
  * calculating the earliest completed time, critical path as well as the slack cost based on CPM (Critical Path Method,
- * specified in Analysis file's documentation).
+ * specified in Project file's documentation).
  * These will cover:
  *   1) First user case allows to retract those information with the assumption tasks are given with the duration
  *   and their precedent dependencies.
@@ -53,7 +53,7 @@ SCENARIO("Success case 1: simple path") {
         std::vector<Task> input;
         input.insert(input.end(), {taskA, taskB, taskC, taskD, taskE, taskF, taskC});
 
-        WHEN("simple path, no change in critical path midway") {
+        WHEN ("simple path, no change in critical path midway") {
             Task newTaskE = Task(12, 12, "newTaskE", taskEDep);
             Task newTaskF = Task(10, 10, "newTaskF", taskFDep);
             input.erase(std::remove(input.begin(), input.end(), taskE), input.end());
@@ -63,7 +63,7 @@ SCENARIO("Success case 1: simple path") {
 
             double expected_ECT = 24;
             std::vector<Task> critical_path{taskA, taskB, taskD, taskG};
-            Analysis newAnalysis = Analysis(input);
+            Project newAnalysis = Project(input);
 
             THEN("no change critical path") {
                 auto ret = newAnalysis.performAnalysis();
@@ -83,7 +83,7 @@ SCENARIO("Success case 1: simple path") {
 
             double expected_ECT = 29;
             std::vector<Task> critical_path{taskA, taskB, taskD, taskG};
-            Analysis newAnalysis = Analysis(input);
+            Project newAnalysis = Project(input);
 
             THEN("changes in critical path") {
                 auto ret = newAnalysis.performAnalysis();
@@ -122,7 +122,7 @@ SCENARIO("Success case 1: simple path") {
         WHEN("complex path, changes in critical path midway") {
             double expected_ECT = 32;
             std::vector<Task> critical_path{taskA2, taskC, taskC, taskD};
-            Analysis newAnalysis = Analysis(input);
+            Project newAnalysis = Project(input);
 
             THEN("changes in critical path") {
                 auto ret = newAnalysis.performAnalysis();

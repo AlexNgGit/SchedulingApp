@@ -4,8 +4,8 @@ Task::Task(double duration, double cost, std::string name, std::vector<Task> dep
     this->duration = duration;
     this->cost = cost;
     this->name = name;
-    /**
-     * TODO: find a way in cpp to deep copy the dependencies array
+    /*
+     * TODO: this should be an empty array instead, but for now we do this finish the priority first.
      */
-     this->dependencies = dependencies;
+    this->dependencies = dependencies;
 }
