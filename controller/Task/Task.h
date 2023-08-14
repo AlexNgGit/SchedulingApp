@@ -18,6 +18,7 @@ class Task {
         double duration;
         double cost;
         double earliestStart;
+        double earliestFinish;
         std::string name;
         std::vector<Task> dependencies;
         Task(double duration, double cost, std::string name, std::vector<Task> dependencies);

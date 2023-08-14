@@ -24,14 +24,20 @@ using namespace std;
 class Project {
 public:
     double ECT;
-    std::vector<unique_ptr<Task>> criticalPath;
+    std::vector<Task* > criticalPath;
     vector<Task*> input;
     unordered_map<Task*, Vertex*> verticesMap;
+    vector<vector<Vertex*> > bfsMatrix;
+    Vertex* START;
+    Vertex* END;
 
     Project(std::vector<Task*> input);
     Project performAnalysis();
     void createVertices();
     void editInDegree();
+    void calculateTime(Vertex* element);
+    void getEST();
+    void getCriticalPath();
 };
 
 #endif //SCHEDULINGAPP_ANALYSIS_H
