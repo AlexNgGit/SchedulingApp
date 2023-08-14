@@ -2,6 +2,7 @@
 #define SCHEDULINGAPP_ANALYSIS_H
 #include <vector>
 #include "../../Task/Task.h"
+#include "../Vertex/Vertex.h"
 /**
  * Project is an information object that accept an input of Tasks (more details are in ../Task/Task.h) to generate:
  *      1) Estimated earliest time
@@ -19,16 +20,18 @@
  *
  *
  */
-
+using namespace std;
 class Project {
 public:
     double ECT;
-    std::vector<Task> criticalPath;
-    std::vector<Task> taskList;
-    Task* START;
-    Task* END;
-    Project(std::vector<Task> input);
+    std::vector<unique_ptr<Task>> criticalPath;
+    vector<Task*> input;
+    unordered_map<Task*, Vertex*> verticesMap;
+
+    Project(std::vector<Task*> input);
     Project performAnalysis();
+    void createVertices();
+    void editInDegree();
 };
 
 #endif //SCHEDULINGAPP_ANALYSIS_H
