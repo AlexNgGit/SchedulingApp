@@ -24,20 +24,20 @@ using namespace std;
 class Project {
 public:
     double ECT;
-    std::vector<Task* > criticalPath;
-    vector<Task*> input;
-    unordered_map<Task*, Vertex*> verticesMap;
-    vector<vector<Vertex*> > bfsMatrix;
-    Vertex* START;
-    Vertex* END;
+    std::vector<shared_ptr<Task> > criticalPath;
+    vector<shared_ptr<Task> > input;
+    vector<vector<shared_ptr<Vertex> > > bfsMatrix;
+    shared_ptr<Vertex> START;
+    shared_ptr<Vertex> END;
 
-    Project(std::vector<Task*> input);
-    Project performAnalysis();
-    void createVertices();
-    void editInDegree();
-    void calculateTime(Vertex* element);
-    void getEST();
-    void getCriticalPath();
+    Project(std::vector<shared_ptr<Task > > input);
+    unordered_map<shared_ptr<Task>, shared_ptr<Vertex> > createVertices();
+    void editInDegree(unordered_map<shared_ptr<Task>, shared_ptr<Vertex> >);
+    Project bfsAnalysis(unordered_map<shared_ptr<Task>, shared_ptr<Vertex> >);
+    void calculateTime(shared_ptr<Vertex> element);
+    void calculateEST();
+    void calculateCriticalPath();
+    Project* getAnalysis();
 };
 
 #endif //SCHEDULINGAPP_ANALYSIS_H

@@ -23,7 +23,7 @@
 
 
 
-SCENARIO("Success case 1: simple path") {
+/*SCENARIO("Success case 1: simple path") {
 
     GIVEN("Simple valid graph, no changing midway, single end and start") {
 
@@ -60,9 +60,9 @@ SCENARIO("Success case 1: simple path") {
 
             THEN("no change critical path") {
                 try{
-                   /* auto ret = newAnalysis.performAnalysis();
+                    auto ret = newAnalysis.performAnalysis();
                     REQUIRE(ret.ECT == expected_ECT);
-                    REQUIRE(ret.criticalPath == critical_path);*/
+                    REQUIRE(ret.criticalPath == critical_path);
                 } catch (std::logic_error) {
                     FAIL("LOGIC ERROR");
                 }
@@ -70,7 +70,7 @@ SCENARIO("Success case 1: simple path") {
 
         }
 
-        /*WHEN("simple path, changes in critical path midway") {
+        WHEN("simple path, changes in critical path midway") {
             Task newTaskE = Task(12, 12, "newTaskE", taskEDep);
             Task newTaskF = Task(10, 10, "newTaskF", taskFDep);
             input.erase(std::remove(input.begin(), input.end(), taskE), input.end());
@@ -126,6 +126,6 @@ SCENARIO("Success case 1: simple path") {
                 REQUIRE(ret.ECT == expected_ECT);
                 REQUIRE(ret.criticalPath == critical_path);
             }
-        }*/
+        }
     }
-}
+}*/

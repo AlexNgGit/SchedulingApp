@@ -7,10 +7,9 @@
 class Vertex {
 public:
     int in_degrees;
-    Task* presentingTask;
-    Vertex(Task* presentingTask);
+    shared_ptr<Task> presentingTask;
+    Vertex(shared_ptr<Task> presentingTask);
     void editInDegree(int offset);
 };
-
 
 #endif //SCHEDULINGAPP_VERTEX_H

@@ -2,59 +2,61 @@
 #include <vector>
 #include <queue>
 
-Project::Project(std::vector<Task*> input) {
+Project::Project(vector<shared_ptr<Task> > input) {
     this->input = input;
-    vector<Task> emptySTART;
-    Task* newSTART = new Task(0, 0, "START", emptySTART);
-    this->START = new Vertex(newSTART);
 
-    vector<Task> emptyEND;
-    Task* newEND = new Task(0, 0, "END", emptyEND);
-    this->END = new Vertex(newEND);
+    vector<shared_ptr<Task> > emptySTART;
+    shared_ptr<Task> newSTART (new Task(0, 0, "START", emptySTART));
+    this->START = shared_ptr<Vertex>(new Vertex(newSTART));
+
+    vector<shared_ptr<Task> > emptyEND;
+    shared_ptr<Task> newEND (new Task(0, 0, "END", emptyEND));
+    this->END = shared_ptr<Vertex>(new Vertex(newEND));
 }
 
-void Project::createVertices() {
+unordered_map<shared_ptr<Task>, shared_ptr<Vertex> > Project::createVertices() {
+    unordered_map<shared_ptr<Task>, shared_ptr<Vertex> > verticesMap;
+    verticesMap.insert(make_pair(this->START->presentingTask, this->START));
     auto begin = this->input.begin();
     auto end = this->input.end();
     for (auto i = begin; i != end; i++) {
-        Vertex* value =  new Vertex(*i);
-        this->verticesMap[*i] = value;
+        verticesMap[*i] = shared_ptr<Vertex> (new Vertex(*i));
     }
+    return verticesMap;
 }
 
-void Project::editInDegree() {
-    this->verticesMap[this->START->presentingTask] = START;
+void Project::editInDegree(unordered_map<shared_ptr<Task>, shared_ptr<Vertex> >  verticesMap) {
 
-    auto begin = this->verticesMap.begin();
-    auto end = this->verticesMap.end();
+    auto begin = verticesMap.begin();
+    auto end = verticesMap.end();
 
     for (auto i = begin; i != end; i++) {
         if ((*i).first->dependencies.size() == 0) {
-            this->START->presentingTask->dependencies.push_back(*((*i).first));
+            this->START->presentingTask->dependencies.push_back(((*i).first));
         }
         for (auto element: (*i).first->dependencies) {
-            auto currTask = this->verticesMap[&element]->presentingTask;
-            auto value = this->verticesMap[currTask];
+            auto currTask = verticesMap[element]->presentingTask;
+            auto value = verticesMap[currTask];
             value->in_degrees++;
         }
     }
 }
 
-void Project::calculateTime(Vertex* element) {
+void Project::calculateTime(shared_ptr<Vertex> element) {
     for (auto subElement: element->presentingTask->dependencies){
-        element->presentingTask->earliestStart = max(element->presentingTask->earliestStart, subElement.earliestFinish);
+        element->presentingTask->earliestStart = max(element->presentingTask->earliestStart, subElement->earliestFinish);
     }
-    element->presentingTask->earliestFinish =  element->presentingTask->earliestStart + element->presentingTask->duration;
+    element->presentingTask->earliestFinish =
+            element->presentingTask->earliestStart + element->presentingTask->duration;
 }
 
-Project Project::performAnalysis() {
-    try {
-        auto firstLayer = vector<Vertex*>();
-        firstLayer.push_back(this->verticesMap[this->START->presentingTask]);
+Project Project::bfsAnalysis(unordered_map<shared_ptr<Task>, shared_ptr<Vertex> >  verticesMap) {
+        auto firstLayer = vector<shared_ptr<Vertex> >();
+        firstLayer.push_back(verticesMap[this->START->presentingTask]);
         bfsMatrix.push_back(firstLayer);
         int i = 0;
         while (bfsMatrix[i].size() != 0) {
-            auto newLayer = vector<Vertex *>();
+            auto newLayer = vector<shared_ptr<Vertex> >();
             bfsMatrix.push_back(newLayer);
             for (auto element: bfsMatrix[i]) {
                 element->editInDegree(-1);
@@ -64,15 +66,32 @@ Project Project::performAnalysis() {
                 }
             }
         }
-    } catch (logic_error) {
-        throw logic_error("NOT IMPLEMENTED YET");
-    }
 }
 
-void Project::getEST() {
+void Project::calculateEST() {
     for (auto element: bfsMatrix[bfsMatrix.size()-1]) {
         this->ECT = max(element->presentingTask->earliestFinish, this->ECT);
     }
+}
+
+void Project::calculateCriticalPath() {
+    for (auto element: bfsMatrix) {
+        for (auto subElement: element) {
+            auto currTask = subElement->presentingTask;
+            if (currTask->earliestStart + currTask->duration == currTask->earliestFinish) {
+                this->criticalPath.push_back(subElement->presentingTask);
+            }
+        }
+    }
+}
+
+Project* Project::getAnalysis() {
+    auto map = createVertices();
+    editInDegree(map);
+    bfsAnalysis(map);
+    calculateEST();
+    calculateCriticalPath();
+    return this;
 }
 
 

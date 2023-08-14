@@ -13,14 +13,15 @@
  * Task can have a start date type Date
  * Task can have extra address information.
  */
+using namespace std;
 class Task {
     public:
         double duration;
         double cost;
         double earliestStart;
         double earliestFinish;
-        std::string name;
-        std::vector<Task> dependencies;
-        Task(double duration, double cost, std::string name, std::vector<Task> dependencies);
+        string name;
+        vector<shared_ptr<Task>> dependencies;
+        Task(double duration, double cost, string name, vector<shared_ptr<Task>> dependencies);
 };
 #endif //SCHEDULINGAPP_TASK_H

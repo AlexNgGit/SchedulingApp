@@ -1,6 +1,6 @@
 #include "Task.h"
 
-Task::Task(double duration, double cost, std::string name, std::vector<Task> dependencies) {
+Task::Task(double duration, double cost, string name, vector<shared_ptr<Task> > dependencies) {
     this->duration = duration;
     this->cost = cost;
     this->name = name;

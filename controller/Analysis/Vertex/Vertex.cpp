@@ -1,7 +1,7 @@
 #include "Vertex.h"
 
 using namespace std;
-Vertex::Vertex(Task* presentingTask) {
+Vertex::Vertex(shared_ptr<Task> presentingTask) {
     this->presentingTask = presentingTask;
     this->in_degrees = 0;
 }
