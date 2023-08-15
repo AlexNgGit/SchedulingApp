@@ -2,7 +2,6 @@
 #define SCHEDULINGAPP_ANALYSIS_H
 #include <vector>
 #include "../../Task/Task.h"
-#include "../Vertex/Vertex.h"
 /**
  * Project is an information object that accept an input of Tasks (more details are in ../Task/Task.h) to generate:
  *      1) Estimated earliest time
@@ -26,15 +25,14 @@ public:
     double ECT;
     std::vector<shared_ptr<Task> > criticalPath;
     vector<shared_ptr<Task> > input;
-    vector<vector<shared_ptr<Vertex> > > bfsMatrix;
-    shared_ptr<Vertex> START;
-    shared_ptr<Vertex> END;
+    vector<vector<shared_ptr<Task> > > bfsMatrix;
+    shared_ptr<Task> START;
 
     Project(std::vector<shared_ptr<Task > > input);
-    unordered_map<shared_ptr<Task>, shared_ptr<Vertex> > createVertices();
-    void editInDegree(unordered_map<shared_ptr<Task>, shared_ptr<Vertex> >);
-    Project bfsAnalysis(unordered_map<shared_ptr<Task>, shared_ptr<Vertex> >);
-    void calculateTime(shared_ptr<Vertex> element);
+    void createVertices();
+    void editInDegree(unordered_map<shared_ptr<Task>, shared_ptr<Task> >);
+    void bfsAnalysis();
+    void calculateTime(shared_ptr<Task> element);
     void calculateEST();
     void calculateCriticalPath();
     Project* getAnalysis();

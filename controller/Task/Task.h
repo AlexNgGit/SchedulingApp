@@ -20,8 +20,11 @@ class Task {
         double cost;
         double earliestStart;
         double earliestFinish;
+        int in_degrees;
+        bool visited;
         string name;
-        vector<shared_ptr<Task>> dependencies;
-        Task(double duration, double cost, string name, vector<shared_ptr<Task>> dependencies);
+        vector<shared_ptr<Task > > dependencies;
+        vector<shared_ptr<Task> > childNodes;
+        Task(double duration, double cost, string name, vector<shared_ptr<Task > > dependencies);
 };
 #endif //SCHEDULINGAPP_TASK_H

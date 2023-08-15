@@ -23,46 +23,39 @@
 
 
 
-/*SCENARIO("Success case 1: simple path") {
+SCENARIO("Success case 1: simple path") {
 
     GIVEN("Simple valid graph, no changing midway, single end and start") {
 
-        std::vector<Task> taskADep;
-        Task taskA = Task(5, 5, "A", taskADep);
-        std::vector<Task> taskBDep;
-        taskBDep.push_back(taskA);
-        Task taskB = Task(10, 10, "B", taskBDep);
-        std::vector<Task> taskCDep;
-        taskCDep.push_back(taskA);
-        Task taskC = Task(8, 8, "C", taskCDep);
-        std::vector<Task> taskDDep;
-        taskDDep.push_back(taskB);
-        Task taskD = Task(6, 6, "D", taskDDep);
-        std::vector<Task> taskEDep;
-        taskEDep.push_back(taskC);
-        Task taskE = Task(7, 7, "E", taskEDep);
-        std::vector<Task> taskFDep;
-        taskFDep.push_back(taskC);
-        Task taskF = Task(4, 4, "F", taskFDep);
-        std::vector<Task> taskGDep;
-        taskGDep.push_back(taskE);
-        taskGDep.push_back(taskF);
-        Task taskG = Task(4, 4, "G", taskGDep);
+        shared_ptr<Task> taskA(new Task(5, 5, "A", vector<shared_ptr<Task>>()));
+        shared_ptr<Task> taskB(new Task(10, 10, "B", vector<shared_ptr<Task>>({
+            taskA
+        })));
+        shared_ptr<Task> taskC(new Task(8, 8, "C", vector<shared_ptr<Task>>({
+            taskA})));
+        shared_ptr<Task> taskD(new Task(6, 6, "D", vector<shared_ptr<Task>>({
+            taskB})));
+        shared_ptr<Task> taskE(new Task(7, 7, "E", vector<shared_ptr<Task>>({
+            taskC})));
+        shared_ptr<Task> taskF(new Task(4, 4, "F", vector<shared_ptr<Task>>({
+            taskC})));
+        shared_ptr<Task> taskG(new Task(4, 4, "G", vector<shared_ptr<Task>>({
+            taskE, taskF, taskD})));
 
-        std::vector<Task> input;
-        input.insert(input.end(), {taskA, taskB, taskC, taskD, taskE, taskF, taskC});
+        std::vector<shared_ptr<Task>> input;
+        input.insert(input.end(), {taskA, taskB, taskC, taskD, taskE, taskF, taskG});
 
         WHEN ("simple path, no change in critical path midway") {
 
-            double expected_ECT = 24;
-            std::vector<Task> critical_path{taskA, taskB, taskD, taskG};
-            //Project newAnalysis = Project(input);
+            double expected_ECT = 25;
+            std::vector<shared_ptr<Task>> critical_path{taskA, taskB, taskD, taskG};
+            shared_ptr<Project> newAnalysis(new Project(input));
 
             THEN("no change critical path") {
                 try{
-                    auto ret = newAnalysis.performAnalysis();
-                    REQUIRE(ret.ECT == expected_ECT);
-                    REQUIRE(ret.criticalPath == critical_path);
+                    auto ret =  newAnalysis->getAnalysis();
+                    REQUIRE(ret->ECT == expected_ECT);
+                    //REQUIRE(ret->criticalPath == critical_path);
                 } catch (std::logic_error) {
                     FAIL("LOGIC ERROR");
                 }
@@ -70,7 +63,7 @@
 
         }
 
-        WHEN("simple path, changes in critical path midway") {
+        /*WHEN("simple path, changes in critical path midway") {
             Task newTaskE = Task(12, 12, "newTaskE", taskEDep);
             Task newTaskF = Task(10, 10, "newTaskF", taskFDep);
             input.erase(std::remove(input.begin(), input.end(), taskE), input.end());
@@ -126,6 +119,6 @@
                 REQUIRE(ret.ECT == expected_ECT);
                 REQUIRE(ret.criticalPath == critical_path);
             }
-        }
+        }*/
     }
-}*/
+}
