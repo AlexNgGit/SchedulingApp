@@ -30,6 +30,7 @@ public:
     shared_ptr<Task> END;
 
     Project(std::vector<shared_ptr<Task > > input);
+    void reset();
     void createVertices();
     void editInDegree(unordered_map<shared_ptr<Task>, shared_ptr<Task> >);
     void bfsAnalysis();

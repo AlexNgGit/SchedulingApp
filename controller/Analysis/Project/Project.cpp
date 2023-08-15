@@ -7,6 +7,19 @@ Project::Project(vector<shared_ptr<Task> > input) {
     this->END.reset(new Task(0, 0, "END", vector<shared_ptr<Task> >()));
 }
 
+void  Project::reset() {
+    if (this->START->childNodes.size() != 0) {
+        for (auto element: this->input) {
+            element->earliestStart = 0;
+            element->earliestFinish = 0;
+            element->latestStart = 0;
+            element->latestFinish = 0;
+            element->dependencies.size() == 0 ? element->in_degrees = 1: element->in_degrees = element->dependencies.size();
+            element->visited = false;
+        }
+    }
+}
+
 void Project::createVertices() {
     for (const auto& task : this->input) {
         if (task->dependencies.size() == 0) {
@@ -77,6 +90,7 @@ void Project::calculateCriticalPath(shared_ptr<Task> currElement) {
 }
 
 Project* Project::getAnalysis() {
+    reset();
     createVertices();
     bfsAnalysis();
     calculateEST();
