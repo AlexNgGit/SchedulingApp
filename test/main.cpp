@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 #include <algorithm>
+#include <vector>
 #include "../controller/Task/Task.h"
 #include "../controller/Analysis/Project/Project.h"
 /**
@@ -21,7 +22,19 @@
  *
  */
 
-
+bool checkInclude (vector<shared_ptr<Task> > expected, vector<shared_ptr<Task> > ret) {
+    bool isInclude = true;
+    for (auto element: expected) {
+        bool curr = false;
+        for (auto sub: ret) {
+            if (sub == element) {
+                curr = true;
+            }
+        }
+        isInclude = curr && isInclude;
+    }
+    return isInclude;
+}
 
 SCENARIO("Success case 1: simple path") {
 
@@ -53,19 +66,10 @@ SCENARIO("Success case 1: simple path") {
 
             THEN("no change critical path") {
                 try{
-                    bool isInclude;
                     auto ret =  newAnalysis->getAnalysis();
                     REQUIRE(ret->ECT == expected_ECT);
                     REQUIRE(ret->criticalPath.size() == critical_path.size());
-                    /*for (auto element: ret->criticalPath) {
-                        isInclude = false;
-                        for (auto sub: critical_path){
-                            if (sub == element) {
-                                isInclude = true;
-                            }
-                        }
-                    }
-                    REQUIRE(isInclude);*/
+                    REQUIRE(checkInclude(critical_path, ret->criticalPath));
                 } catch (std::logic_error) {
                     FAIL("LOGIC ERROR");
                 }
