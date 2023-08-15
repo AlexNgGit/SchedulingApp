@@ -27,6 +27,7 @@ public:
     vector<shared_ptr<Task> > input;
     vector<vector<shared_ptr<Task> > > bfsMatrix;
     shared_ptr<Task> START;
+    shared_ptr<Task> END;
 
     Project(std::vector<shared_ptr<Task > > input);
     void createVertices();
@@ -34,7 +35,7 @@ public:
     void bfsAnalysis();
     void calculateTime(shared_ptr<Task> element);
     void calculateEST();
-    void calculateCriticalPath();
+    void calculateCriticalPath(shared_ptr<Task> currElement);
     Project* getAnalysis();
 };
 

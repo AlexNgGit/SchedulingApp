@@ -20,6 +20,9 @@ class Task {
         double cost;
         double earliestStart;
         double earliestFinish;
+        double latestStart;
+        double latestFinish;
+        double slackTime;
         int in_degrees;
         bool visited;
         string name;

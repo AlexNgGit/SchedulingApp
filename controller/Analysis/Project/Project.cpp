@@ -4,6 +4,7 @@
 Project::Project(vector<shared_ptr<Task> > input) {
     this->input = input;
     this->START.reset(new Task(0, 0, "START", vector<shared_ptr<Task> >()));
+    this->END.reset(new Task(0, 0, "END", vector<shared_ptr<Task> >()));
 }
 
 void Project::createVertices() {
@@ -21,7 +22,7 @@ void Project::calculateTime(shared_ptr<Task> element) {
     auto& task = element;
 
     for (const auto& subElement : task->dependencies) {
-        task->earliestStart = std::max(task->earliestStart, subElement->earliestFinish);
+        task->earliestStart = max(task->earliestStart, subElement->earliestFinish);
     }
 
     task->earliestFinish = task->earliestStart + task->duration;
@@ -56,25 +57,30 @@ void Project::bfsAnalysis() {
 void Project::calculateEST() {
     for (auto element: bfsMatrix[bfsMatrix.size()-2]) {
         this->ECT = max(element->earliestFinish, this->ECT);
+        END->dependencies.push_back(element);
     }
+    END->earliestStart = END->earliestFinish = END->latestFinish = END->latestStart = ECT;
+    bfsMatrix[bfsMatrix.size() - 1] = vector<shared_ptr<Task> >();
+    bfsMatrix[bfsMatrix.size() - 1].push_back(END);
 }
 
-void Project::calculateCriticalPath() {
-    for (auto element: bfsMatrix) {
-        for (auto subElement: element) {
-            auto currTask = subElement;
-            if (currTask->earliestStart + currTask->duration == currTask->earliestFinish) {
-                this->criticalPath.push_back(subElement);
-            }
-        }
-    }
+void Project::calculateCriticalPath(shared_ptr<Task> currElement) {
+   for (auto subNode: currElement->dependencies) {
+       subNode->latestFinish = currElement->latestStart;
+       subNode->latestStart = subNode->latestFinish - subNode->duration;
+       if (subNode->latestFinish - subNode->earliestFinish == 0 && subNode != START) {
+           criticalPath.push_back(subNode);
+       }
+       this->calculateCriticalPath(subNode);
+   }
+
 }
 
 Project* Project::getAnalysis() {
     createVertices();
     bfsAnalysis();
     calculateEST();
-    //calculateCriticalPath();
+    calculateCriticalPath(this->END);
     return this;
 }
 

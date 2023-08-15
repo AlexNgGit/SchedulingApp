@@ -53,9 +53,19 @@ SCENARIO("Success case 1: simple path") {
 
             THEN("no change critical path") {
                 try{
+                    bool isInclude;
                     auto ret =  newAnalysis->getAnalysis();
                     REQUIRE(ret->ECT == expected_ECT);
-                    //REQUIRE(ret->criticalPath == critical_path);
+                    REQUIRE(ret->criticalPath.size() == critical_path.size());
+                    /*for (auto element: ret->criticalPath) {
+                        isInclude = false;
+                        for (auto sub: critical_path){
+                            if (sub == element) {
+                                isInclude = true;
+                            }
+                        }
+                    }
+                    REQUIRE(isInclude);*/
                 } catch (std::logic_error) {
                     FAIL("LOGIC ERROR");
                 }
