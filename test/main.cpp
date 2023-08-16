@@ -166,7 +166,7 @@ SCENARIO("Success case 1: simple path") {
                                                                                     taskC})));
         shared_ptr<Task> taskG(new Task(4, 4, "G", vector<shared_ptr<Task>>({
                                                                                     taskE, taskF, taskD})));
-        //add loop at taskG
+        //add loop at taskE and taskG
         taskE->dependencies.push_back(taskG);
 
         vector<shared_ptr<Task>> input;
@@ -184,6 +184,37 @@ SCENARIO("Success case 1: simple path") {
                 }
             }
 
+        }
+    }
+
+    GIVEN("Complex valid path, multiple starts, multiple ends, paths changes continuously") {
+        shared_ptr<Task> taskA1(new Task(5, 5, "A1", vector<shared_ptr<Task>>()));
+        shared_ptr<Task> taskA2(new Task(6, 6, "A2", vector<shared_ptr<Task>>()));
+        shared_ptr<Task> taskB(new Task(10, 10, "B",
+                                        vector<shared_ptr<Task>>({taskA1})));
+        shared_ptr<Task> taskC(new Task(8, 8, "C",
+                                        vector<shared_ptr<Task>>({taskA1, taskA2})));
+        shared_ptr<Task> taskE(new Task(12, 12, "E",
+                                        vector<shared_ptr<Task>>({taskC})));
+        shared_ptr<Task> taskF(new Task(10, 10, "F",
+                                        vector<shared_ptr<Task>>({taskC})));
+        shared_ptr<Task> taskD(new Task(6, 6, "D",
+                                        vector<shared_ptr<Task>>({taskB, taskE})));
+        shared_ptr<Task> taskG(new Task(4, 4, "G",
+                                        vector<shared_ptr<Task>>({taskF})));
+
+        std::vector<shared_ptr<Task>> input;
+        input.insert(input.end(), {taskA1, taskA2, taskB, taskC, taskD, taskE, taskF, taskG});
+
+        //add loop at taskE and taskG
+        taskE->dependencies.push_back(taskG);
+
+        WHEN("complex path, changes in critical path midway") {
+            shared_ptr<Project> newAnalysis (new  Project(input));
+
+            THEN("changes in critical path") {
+                REQUIRE_THROWS(newAnalysis->getAnalysis());
+            }
         }
     }
 }
