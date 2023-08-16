@@ -33,11 +33,9 @@ void Project::createVertices() {
 
 void Project::calculateTime(shared_ptr<Task> element) {
     auto& task = element;
-
     for (const auto& subElement : task->dependencies) {
         task->earliestStart = max(task->earliestStart, subElement->earliestFinish);
     }
-
     task->earliestFinish = task->earliestStart + task->duration;
 }
 
@@ -52,16 +50,16 @@ void Project::bfsAnalysis() {
         bfsMatrix.push_back(newLayer);
         for (const auto& element : bfsMatrix[i]) {
             for (const auto& subElement : element->childNodes) {
+                if (subElement->visited) {
+                    throw std::logic_error("INVALID GRAPH HAS CYCLE AT ");
+                }
                 subElement->in_degrees--;
                 if (subElement->in_degrees == 0) {
-                    if (subElement->visited) {
-                        throw std::logic_error("INVALID GRAPH HAS CYCLE AT ");
-                    }
                     bfsMatrix[i + 1].push_back(subElement);
                     calculateTime(subElement);
-                    subElement->visited = true;
                 }
             }
+            element->visited = true;
         }
         i++;
     }
@@ -81,12 +79,12 @@ void Project::calculateCriticalPath(shared_ptr<Task> currElement) {
    for (auto subNode: currElement->dependencies) {
        subNode->latestFinish = currElement->latestStart;
        subNode->latestStart = subNode->latestFinish - subNode->duration;
-       if (subNode->latestFinish - subNode->earliestFinish == 0 && subNode != START) {
+       subNode->slackTime = subNode->latestFinish - subNode->earliestFinish;
+       if (subNode->slackTime == 0 && subNode != START) {
            criticalPath.push_back(subNode);
        }
        this->calculateCriticalPath(subNode);
    }
-
 }
 
 Project* Project::getAnalysis() {

@@ -98,12 +98,17 @@ SCENARIO("Success case 1: simple path") {
 
             double expected_ECT = 29;
             std::vector<shared_ptr<Task>> critical_path{taskA, taskC, newTaskE, taskG};
-            Project newAnalysis = Project(input);
+            shared_ptr<Project> newAnalysis (new Project(input));
 
             THEN("changes in critical path") {
-                auto ret = newAnalysis.getAnalysis();
-                REQUIRE(ret->ECT == expected_ECT);
-                REQUIRE(checkInclude(critical_path, ret->criticalPath));
+                try{
+                    auto ret =  newAnalysis->getAnalysis();
+                    REQUIRE(ret->ECT == expected_ECT);
+                    REQUIRE(ret->criticalPath.size() == critical_path.size());
+                    REQUIRE(checkInclude(critical_path, ret->criticalPath));
+                } catch (std::logic_error) {
+                    FAIL("LOGIC ERROR");
+                }
             }
         }
 
@@ -131,13 +136,54 @@ SCENARIO("Success case 1: simple path") {
         WHEN("complex path, changes in critical path midway") {
             double expected_ECT = 32;
             std::vector<shared_ptr<Task>> critical_path{taskA2, taskC, taskC, taskD};
-            Project newAnalysis = Project(input);
+            shared_ptr<Project> newAnalysis (new  Project(input));
 
             THEN("changes in critical path") {
-                auto ret = newAnalysis.getAnalysis();
-                REQUIRE(ret->ECT == expected_ECT);
-                REQUIRE(checkInclude(critical_path, ret->criticalPath));
+                try{
+                    auto ret =  newAnalysis->getAnalysis();
+                    REQUIRE(ret->ECT == expected_ECT);
+                    REQUIRE(ret->criticalPath.size() == critical_path.size());
+                    REQUIRE(checkInclude(critical_path, ret->criticalPath));
+                } catch (std::logic_error) {
+                    FAIL("LOGIC ERROR");
+                }
             }
+        }
+    }
+
+    GIVEN("invalid input, graph has cycles, single end, single start") {
+        shared_ptr<Task> taskA(new Task(5, 5, "A", vector<shared_ptr<Task>>()));
+        shared_ptr<Task> taskB(new Task(10, 10, "B", vector<shared_ptr<Task>>({
+                                                                                      taskA
+                                                                              })));
+        shared_ptr<Task> taskC(new Task(8, 8, "C", vector<shared_ptr<Task>>({
+                                                                                    taskA})));
+        shared_ptr<Task> taskD(new Task(6, 6, "D", vector<shared_ptr<Task>>({
+                                                                                    taskB})));
+        shared_ptr<Task> taskE(new Task(7, 7, "E", vector<shared_ptr<Task>>({
+                                                                                    taskC})));
+        shared_ptr<Task> taskF(new Task(4, 4, "F", vector<shared_ptr<Task>>({
+                                                                                    taskC})));
+        shared_ptr<Task> taskG(new Task(4, 4, "G", vector<shared_ptr<Task>>({
+                                                                                    taskE, taskF, taskD})));
+        //add loop at taskG
+        taskE->dependencies.push_back(taskG);
+
+        vector<shared_ptr<Task>> input;
+        input.insert(input.end(), {taskA, taskB, taskC, taskD, taskE, taskF, taskG});
+
+        WHEN ("simple valid path, no change in critical path midway") {
+            shared_ptr<Project> newAnalysis(new Project(input));
+
+            THEN("no change critical path") {
+                try {
+                    newAnalysis->getAnalysis();
+                    FAIL("EXPECTED ERROR THROWN");
+                } catch (logic_error) {
+                    SUCCEED("EXPECTED");
+                }
+            }
+
         }
     }
 }
