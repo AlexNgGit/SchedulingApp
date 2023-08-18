@@ -3,6 +3,9 @@
 #include <vector>
 #include "../controller/Task/Task.h"
 #include "../controller/Analysis/Project/ProjectTool.h"
+#include <OpenXLSX.hpp>
+
+
 /**
  * Using Catch2 testing library, this test file aims to cover the majority of failure as well successful cases for
  * calculating the earliest completed time, critical path as well as the slack cost based on CPM (Critical Path Method,
@@ -34,6 +37,17 @@ bool checkInclude (vector<shared_ptr<Task> > expected, vector<shared_ptr<Task> >
         isInclude = curr && isInclude;
     }
     return isInclude;
+}
+
+void whatever() {
+
+        OpenXLSX::XLDocument doc;
+        doc.create("Spreadsheet.xlsx");
+        auto wks = doc.workbook().worksheet("Sheet1");
+
+        wks.cell("A1").value() = "Hello, OpenXLSX!";
+
+        doc.save();
 }
 
 SCENARIO("Success case 1: simple path") {
