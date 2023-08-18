@@ -5,7 +5,7 @@
 - This app will try to ambitiously provide intuitive way to calculate and visualize Critical Path through a graph presentation. 
 
 ## Minimum Goal for version 1.0:
-- Users can add a list of tasks to a project.
+- Users can add a list of tasks to a project through loading an excel file.
 - :white_check_mark: Users can perform the analysis and retract information such as earliest finish time, a list of tasks from critical path 
 - Users can render a visual graph presentation of all the tasks.
 

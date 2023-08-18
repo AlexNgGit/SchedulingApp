@@ -8,3 +8,4 @@ Window {
         anchors.centerIn: parent
     }
 }
+

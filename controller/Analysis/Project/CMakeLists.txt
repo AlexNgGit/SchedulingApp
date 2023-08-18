@@ -1,2 +1,2 @@
-add_library(ProjectLibrary project.cpp project.h)
+add_library(ProjectLibrary ProjectTool.cpp ProjectTool.h)
 target_link_libraries(ProjectLibrary PUBLIC TaskLibrary)

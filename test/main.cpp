@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include "../controller/Task/Task.h"
-#include "../controller/Analysis/Project/Project.h"
+#include "../controller/Analysis/Project/ProjectTool.h"
 /**
  * Using Catch2 testing library, this test file aims to cover the majority of failure as well successful cases for
  * calculating the earliest completed time, critical path as well as the slack cost based on CPM (Critical Path Method,
@@ -62,7 +62,7 @@ SCENARIO("Success case 1: simple path") {
 
             double expected_ECT = 25;
             std::vector<shared_ptr<Task>> critical_path{taskA, taskB, taskD, taskG};
-            shared_ptr<Project> newAnalysis(new Project(input));
+            shared_ptr<ProjectTool> newAnalysis(new ProjectTool(input));
 
             THEN("no change critical path") {
                 try{
@@ -90,15 +90,15 @@ SCENARIO("Success case 1: simple path") {
             input.insert(input.end(), newTaskE);
             input.insert(input.end(), newTaskF);
 
-            taskG->dependencies.erase(remove(taskG->dependencies.begin(), taskG->dependencies.end(), taskE), taskG->dependencies.end());
-            taskG->dependencies.erase(remove(taskG->dependencies.begin(), taskG->dependencies.end(), taskF), taskG->dependencies.end());
-            taskG->dependencies.push_back(newTaskE);
-            taskG->dependencies.push_back(newTaskF);
+            taskG->deleteParentNode(taskE);
+            taskG->deleteParentNode(taskF);
+            taskG->addParentNode(newTaskE);
+            taskG->addParentNode(newTaskF);
 
 
             double expected_ECT = 29;
             std::vector<shared_ptr<Task>> critical_path{taskA, taskC, newTaskE, taskG};
-            shared_ptr<Project> newAnalysis (new Project(input));
+            shared_ptr<ProjectTool> newAnalysis (new ProjectTool(input));
 
             THEN("changes in critical path") {
                 try{
@@ -136,7 +136,7 @@ SCENARIO("Success case 1: simple path") {
         WHEN("complex path, changes in critical path midway") {
             double expected_ECT = 32;
             std::vector<shared_ptr<Task>> critical_path{taskA2, taskC, taskC, taskD};
-            shared_ptr<Project> newAnalysis (new  Project(input));
+            shared_ptr<ProjectTool> newAnalysis (new  ProjectTool(input));
 
             THEN("changes in critical path") {
                 try{
@@ -167,13 +167,13 @@ SCENARIO("Success case 1: simple path") {
         shared_ptr<Task> taskG(new Task(4, 4, "G", vector<shared_ptr<Task>>({
                                                                                     taskE, taskF, taskD})));
         //add loop at taskE and taskG
-        taskE->dependencies.push_back(taskG);
+        taskE->addParentNode(taskG);
 
         vector<shared_ptr<Task>> input;
         input.insert(input.end(), {taskA, taskB, taskC, taskD, taskE, taskF, taskG});
 
         WHEN ("simple valid path, no change in critical path midway") {
-            shared_ptr<Project> newAnalysis(new Project(input));
+            shared_ptr<ProjectTool> newAnalysis(new ProjectTool(input));
 
             THEN("no change critical path") {
                 try {
@@ -207,10 +207,10 @@ SCENARIO("Success case 1: simple path") {
         input.insert(input.end(), {taskA1, taskA2, taskB, taskC, taskD, taskE, taskF, taskG});
 
         //add loop at taskE and taskG
-        taskE->dependencies.push_back(taskG);
+        taskE->addParentNode(taskG);
 
         WHEN("complex path, changes in critical path midway") {
-            shared_ptr<Project> newAnalysis (new  Project(input));
+            shared_ptr<ProjectTool> newAnalysis (new  ProjectTool(input));
 
             THEN("changes in critical path") {
                 REQUIRE_THROWS(newAnalysis->getAnalysis());

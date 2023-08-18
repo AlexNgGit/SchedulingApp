@@ -20,7 +20,7 @@
  *
  */
 using namespace std;
-class Project {
+class ProjectTool {
 public:
     double ECT;
     std::vector<shared_ptr<Task> > criticalPath;
@@ -29,15 +29,15 @@ public:
     shared_ptr<Task> START;
     shared_ptr<Task> END;
 
-    Project(std::vector<shared_ptr<Task > > input);
+    ProjectTool(std::vector<shared_ptr<Task > > input);
     void reset();
     void createVertices();
     void editInDegree(unordered_map<shared_ptr<Task>, shared_ptr<Task> >);
     void bfsAnalysis();
     void calculateTime(shared_ptr<Task> element);
     void calculateEST();
-    void calculateCriticalPath(shared_ptr<Task> currElement);
-    Project* getAnalysis();
+    void calculateCriticalPath(const shared_ptr<Task>& currElement);
+    ProjectTool* getAnalysis();
 };
 
 #endif //SCHEDULINGAPP_ANALYSIS_H
