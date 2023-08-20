@@ -1,0 +1,4 @@
+module hello
+typeinfo myapp.qmltypes
+prefer :/hello/
+
