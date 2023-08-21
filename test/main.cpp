@@ -39,16 +39,6 @@ bool checkInclude (vector<shared_ptr<Task> > expected, vector<shared_ptr<Task> >
     return isInclude;
 }
 
-void whatever() {
-
-        OpenXLSX::XLDocument doc;
-        doc.create("Spreadsheet.xlsx");
-        auto wks = doc.workbook().worksheet("Sheet1");
-
-        wks.cell("A1").value() = "Hello, OpenXLSX!";
-
-        doc.save();
-}
 
 SCENARIO("Success case 1: simple path") {
 

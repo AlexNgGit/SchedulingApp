@@ -9,6 +9,3 @@ add_subdirectory("controller")
 add_subdirectory("model")
 add_subdirectory("view")
 add_subdirectory("test")
-
-#add_executable(MyProject main.cpp)
-#target_link_libraries(MyProject OpenXLSX::OpenXLSX)

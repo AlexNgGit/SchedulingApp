@@ -1,7 +1,6 @@
 #include "Project.h"
 #include <sys/stat.h>
-#include <OpenXLSX.hpp>
-#include <future>
+#include "OpenXLSX.hpp"
 
 Project::Project() {
     this->name = "";
@@ -48,18 +47,18 @@ int Project::loadExcelFiles(string path) {
         index++;
     }
 
-    for (auto element: input) {
+    /*for (auto element: input) {
         int subElementIndex = 2;
         while(subElementIndex <= subIndex) {
             auto taskName = currSheet.cell("D" + subElementIndex).value().typeAsString();
             element->addParentNode(findTask(taskName));
         }
     }
-    return 1;
+    return 1;*/
 }
 
 
-int Project::loadProject(string pathname) {
+int Project::loadProjectHelper(string pathname) {
     struct stat fileInfo;
     if(stat(pathname.c_str(), &fileInfo) == 0) {
         if(S_ISREG(fileInfo.st_mode)) {
@@ -74,3 +73,14 @@ int Project::loadProject(string pathname) {
     }
     return 0;
 }
+
+future<int> Project::addTasks(string pathName) {
+    return async(std::launch::async, [&]{
+        return this->loadProjectHelper(pathName);
+    });
+}
+
+const vector<shared_ptr<Task>> &Project::getInput() const {
+    return input;
+}
+
