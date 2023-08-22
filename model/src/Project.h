@@ -31,7 +31,7 @@ private:
     int loadExcelFiles(string path);
     shared_ptr<Task> findTask(string taskName);
     int loadProjectHelper(string pathname);
-    int addDependecies(int rowCount, XLWorksheet currSheet);
+    int addDependecies(int rowCount, const XLWorksheet& currSheet);
 
 };
 
