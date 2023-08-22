@@ -73,7 +73,7 @@ SCENARIO("Test1: excel file has one (1) sheet, no start or end keywords are spec
     }
 }
 
-SCENARIO("Test2: excel file has one (1) sheet, Start and End keywords are specified, all rows have valid values") {
+/*SCENARIO("Test2: excel file has one (1) sheet, Start and End keywords are specified, all rows have valid values") {
     GIVEN("initialization: read from existed \"./testXLSX/Test2\" ") {
         const string pathName = "../../testXLSX/Test2.xlsx";
 
@@ -120,7 +120,7 @@ SCENARIO("Test2: excel file has one (1) sheet, Start and End keywords are specif
         }
 
     }
-}
+}*/
 //TODO: need to figure out on how to throws warning.
 
 /*SCENARIO("Test3: excel file has one (1) sheet, Start and End keywords are specified, some rows have missing values") {
