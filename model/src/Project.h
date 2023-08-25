@@ -15,12 +15,14 @@ public:
     Project();
     Project(string name);
     void performAnalysis();
-    future<int> addTasks(string pathName);
+    void loadProjectHelper(string pathname);
+
 
 private:
     string name;
     double ECT;
     vector<shared_ptr<Task> > input;
+    vector<vector<shared_ptr<Task>> > bfsGraph;
 public:
     const vector<shared_ptr<Task>> &getInput() const;
 
@@ -30,9 +32,7 @@ private:
     /* Helpers */
     int loadExcelFiles(string path);
     shared_ptr<Task> findTask(string taskName);
-    int loadProjectHelper(string pathname);
-    int addDependecies(int rowCount, const XLWorksheet& currSheet);
-
+    void addDependecies(vector<string>& dependencies);
 };
 
 
